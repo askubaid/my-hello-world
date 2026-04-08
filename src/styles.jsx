@@ -24,6 +24,20 @@ inputGroup : {
   minWidth: '200px', // Forces wrap when space is less than this
   justifyContent: 'center'
 },
+customUploadBtn : {
+  backgroundColor: '#f5f5f5',
+  border: '1px solid #ccc',
+  borderRadius: '6px',
+  padding: '8px 15px',
+  cursor: 'pointer',
+  fontSize: '0.9em',
+  color: '#444',
+  display: 'inline-block',
+  transition: 'background-color 0.2s',
+  '&:hover': {
+    backgroundColor: '#e8e8e8'
+  }
+},
 //{justifyContent: 'center', fieldwrap: 'wrap', textAlign: 'center',background: 'white', display: 'inline-flex', alignItems: 'center', gap: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', marginBottom: '40px' },
 inputStyle: { width: '60px', padding: '8px', borderRadius: '6px', border: '1px solid #ddd' },
 primaryBtnStyle: { backgroundColor: '#1976d2', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' },

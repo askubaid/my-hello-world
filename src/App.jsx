@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import DownloadIcon from '@mui/icons-material/Download';
-import JSZip from 'jszip'; // Import JSZip
+import JSZip, { file } from 'jszip'; // Import JSZip
 import styles from './styles.jsx';
 import SegmentCard from './SegmentCard.jsx';
 import runKMeans from './KMeans.jsx';
@@ -19,6 +19,11 @@ export default function App() {
   //const [results, setResults] = useState({ segments: [], colors: [] });
   const [selectedIdx, setSelectedIdx] = useState(null);
   const mainCanvasRef = useRef(null);
+  const [fileName, setFileName] = useState('');
+  const [viewing, setViewing] = useState(null);
+
+  const [selectedItem, setSelectedItem] = useState(null); 
+
   // In App.jsx
   const [results, setResults] = useState({ segments: [], colors: [], iterations: 0 });
 
@@ -26,6 +31,7 @@ export default function App() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setFileName(file.name)
       const reader = new FileReader();
       reader.onload = (event) => {
         setImage(event.target.result);
@@ -34,9 +40,7 @@ export default function App() {
       reader.readAsDataURL(file);
     }
   };
-
   
-
   return (
     <div style={{justifyContent: 'center', fieldwrap: 'wrap', minHeight: '100vh'} }> 
     <Header/>
@@ -50,10 +54,26 @@ export default function App() {
 
     <div style={styles.controlsContainer}>
       {/* Group 1: File Upload */}
-      <div style={styles.inputGroup}>
-        <label style={{ fontWeight: 'bold' }}>Upload an Image:</label>
-        <input type="file" onChange={handleImageUpload} style={{maxWidth: '350px'}} /> 
-      </div>
+        <div style={styles.inputGroup}>
+                
+          {/* The Hidden Actual Input */}
+          <input 
+            type="file" 
+            id="file-upload"
+            onChange={handleImageUpload} 
+            style={{ display: 'none' }} 
+          /> 
+
+          {/* The Styled "Fake" Button */}
+          <label 
+            htmlFor="file-upload" 
+            style={styles.customUploadBtn}
+          >
+            Upload Image
+          </label>
+          <label style={{ fontWeight: 'bold' }}>{fileName}</label>
+        
+        </div>
 
       {/* Group 2: K-Value */}
       <div style={styles.inputGroup}>
@@ -70,21 +90,6 @@ export default function App() {
         Analyze & Generate
       </button>
     </div>
-
-
-
-     {/* <div style={styles.controlsContainer }>
-        <label style={{ fontWeight: 'bold' }}>Upload an Image:</label>
-        <input type="file" placeholder='Select' onChange={handleImageUpload}/> 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <label style={{ fontWeight: 'bold' }}>K Value:</label>
-          <input type="number" value={kValue} onChange={e => setKValue(Number(e.target.value))} style={styles.inputStyle} />
-        </div>
-        <button onClick={()=>runKMeans(setIsProcessing, mainCanvasRef, image, kValue, results, setResults)} disabled={!image || isProcessing} style={styles.primaryBtnStyle}>
-          Analyze & Generate
-        </button>
-     </div> */}
-
 
 
 
@@ -148,12 +153,6 @@ export default function App() {
 
 
 
-    
-
-
-
-
-
     {/* Showing original and simplified images */}
 
      <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', flexWrap: 'wrap', marginBottom: '50px' }}>
@@ -189,11 +188,45 @@ export default function App() {
           {/* SEGMENT CARDS */}
 
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
-            {results.segments.map((seg, i) => (
+            {/* {results.segments.map((seg, i) => (
               <SegmentCard key={i} imageData={seg} color={results.colors[i]} label={`Cluster ${i+1}`} onClick={() => setSelectedIdx(i)} />
-            ))}
+            ))} */}
+            {results.segments.map((seg, i) => (
+              <SegmentCard 
+                key={`simple-${i}`} 
+                imageData={seg} 
+                color={results.colors[i]} 
+                onClick={() => setSelectedItem({ index: i, type: 'simple' })} 
+              />
+             ))}
             </div>
           
+
+          {/* --- ORIGINAL COLOR SEGMENTS Cards --- */}
+            {results.originalSegments?.length > 0 && (
+              <div >
+                <hr style={{ border: '0.5px solid #eee', width: '80%', margin: '40px auto' }} />
+                <h3 style={{ marginBottom: '10px' }}>Natural Color Segmentation</h3>
+                <p style={{ color: '#666', marginBottom: '20px' }}>Clusters using original pixel colors with transparency</p>
+                
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
+               
+                  {results.originalSegments.map((seg, i) => (
+              <SegmentCard 
+                key={`natural-${i}`} 
+                imageData={seg} 
+                color={results.colors[i]} 
+                onClick={() => setSelectedItem({ index: i, type: 'natural' })} 
+              />
+            ))}
+                </div>
+              </div>
+            )}
+
+
+
+
+
           {/* SAVE ALL BUTTON */}
           
           <button onClick={()=>downloadAllAsZip(image, results, mainCanvasRef)} style={styles.saveAllBtnStyle}>
@@ -203,13 +236,33 @@ export default function App() {
         </div>
       )}
 
-       {/* showing Modal */}
-     {selectedIdx !== null && (
-        <FullscreenModal imageData={results.segments[selectedIdx]} color={results.colors[selectedIdx]} onClose={() => setSelectedIdx(null)} />
+
+
+      {/* showing Modal */}
+      {selectedItem !== null && (
+        <FullscreenModal 
+          imageData={
+            selectedItem.type === 'simple' 
+            ? results.segments[selectedItem.index] 
+            : results.originalSegments[selectedItem.index]
+          } 
+          color={results.colors[selectedItem.index]} 
+          onClose={() => setSelectedItem(null)} 
+        />
       )}
 
+
+   
      
     </div>
+
+
+
+
+
+
+
+
 
 
 
