@@ -33,7 +33,11 @@ export default function FullscreenModal ({ imageData, color, onClose}) {
   return (
     <div style={styles.modalOverlayStyle} onClick={onClose}>
       <div style={styles.modalContentStyle} onClick={(e) => e.stopPropagation()}>
+
+        <div style={{ ...styles.checkerboardBackground, border: `4px solid rgb(${color.r}, ${color.g}, ${color.b})` }}>
+     
         <canvas ref={canvasRef} style={{ maxWidth: '90vw', maxHeight: '70vh', border: `4px solid rgb(${color.r}, ${color.g}, ${color.b})` }} />
+         </div>
         <h2 style={{ color: 'white' }}>{`RGB: ${color.r}, ${color.g}, ${color.b}`}</h2>
         <button onClick={handleDownload} style={styles.modalDownloadBtnStyle}>
           <DownloadIcon style={{ marginRight: '8px' }} /> Download High-Res

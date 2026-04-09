@@ -1,6 +1,6 @@
-# K-Means Image Segmenter
+# K-Means Image Visualization
 
-An interactive React.js tool that uses the K-Means clustering algorithm to perform color segmentation on images.
+An interactive tool that uses the K-Means clustering algorithm to perform color segmentation on images. This K-Means Tool was built to demonstrate the power of unsupervised machine learning in image processing, By clustering pixel data, we can effectively extract dominant color palettes automatically.
 
 
 ## 🚀 Live Demo

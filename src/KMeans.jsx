@@ -253,7 +253,8 @@ const runKMeans = (setIsProcessing, mainCanvasRef, image, kValue, results, setRe
         segments: newSegments, 
         originalSegments: originalSegments, 
         colors: centroids, 
-        iterations: iterations 
+        iterations: iterations, 
+        assignments: assignments
       });
 
       setIsProcessing(false);

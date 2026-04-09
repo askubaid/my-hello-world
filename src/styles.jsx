@@ -43,7 +43,7 @@ inputStyle: { width: '60px', padding: '8px', borderRadius: '6px', border: '1px s
 primaryBtnStyle: { backgroundColor: '#1976d2', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' },
 cardStyle: { background: 'white', padding: '15px', borderRadius: '12px', cursor: 'pointer', boxShadow: '0 3px 8px rgba(0,0,0,0.1)', width: '210px' },
 iconBtnStyle : { background: '#f5f5f5', border: 'none', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', color: '#1976d2' },
-mainCard : { background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 5px 15px rgba(0,0,0,0.05)' },
+mainCard : { padding: '20px', borderRadius: '12px', boxShadow: '0 5px 15px rgba(0,0,0,0.05)', display: 'flex', flexDirection:"column", alignItems:"center" },
 cardTitle : { margin: '0 0 15px 0', color: '#666', fontSize: '0.8em', textTransform: 'uppercase' },
 modalOverlayStyle : { position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.95)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 3000 },
 loaderOverlayStyle : {position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.95)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 3000, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 4000 },
@@ -67,6 +67,23 @@ labelStyle : {
   color: '#666',
   fontWeight: 'normal',
   fontSize: '0.9em'
+},
+
+checkerboardBackground : {
+  backgroundColor: '#fff',
+  backgroundImage: `
+    linear-gradient(45deg, #eee 25%, transparent 25%), 
+    linear-gradient(-45deg, #eee 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #eee 75%), 
+    linear-gradient(-45deg, transparent 75%, #eee 75%)
+  `,
+  backgroundSize: '16px 16px',
+  backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
+  borderRadius: '4px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  overflow: 'hidden'
 }
 
 

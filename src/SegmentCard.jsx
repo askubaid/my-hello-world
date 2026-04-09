@@ -20,7 +20,11 @@ const SegmentCard= ({ imageData, color, label, onClick })=>  {
 
   return (
     <div onClick={onClick} style={styles.cardStyle}>
-      <canvas ref={canvasRef} style={{ maxWidth: '180px', borderRadius: '4px' }} />
+        {/* Wrap canvas in the checkerboard div */}
+      <div style={styles.checkerboardBackground}>
+        <canvas ref={canvasRef} style={{ maxWidth: '180px', borderRadius: '4px' }} />
+      </div>
+      
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
         <div style={{ textAlign: 'left' }}>
           <div style={{ fontWeight: 'bold', fontSize: '0.9em' }}>{label}</div>

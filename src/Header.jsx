@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './styles.jsx';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
 
 
 export default function Header() {
@@ -7,8 +9,18 @@ export default function Header() {
     <nav style={headerStyle}>
       <div style={logoStyle}>K-Means Tool</div>
       <div style={navLinksStyle}>
-       
-        <a href="#about" style={linkStyle}>About Us</a>
+       {/* <a href="#about" style={linkStyle}>About Us</a> */}
+       {/* GitHub Star Link */}
+     <a 
+        href="https://github.com/askubaid/K-means" 
+        target="https://github.com/askubaid/K-means" 
+        rel="noopener noreferrer" 
+        style={{ ...linkStyle, display: 'flex', alignItems: 'center', gap: '5px', backgroundColor: 'rgba(255,255,255,0.1)', padding: '5px 12px', borderRadius: '15px' }}
+      >
+        <GitHubIcon fontSize="small" />
+        <span>Star on GitHub</span>
+        <StarOutlinedIcon fontSize="small" style={{ color: '#ffeb3b' }} />
+      </a>
       </div>
     </nav>
   );
