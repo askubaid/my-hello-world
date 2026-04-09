@@ -1,26 +1,32 @@
 # K-Means Image Visualization
 
-An interactive tool that uses the K-Means clustering algorithm to perform color segmentation on images. This K-Means Tool was built to demonstrate the power of unsupervised machine learning in image processing, By clustering pixel data, we can effectively extract dominant color palettes automatically.
-
+An interactive tool that uses the K-Means clustering algorithm to perform color segmentation on images. This tool demonstrates the power of unsupervised machine learning in image processing by effectively extracting dominant color palettes and isolating image segments.
 
 ## 🚀 Live Demo
-Tool Demonstration is here: https://askubaid.github.io/K-means/
+**Try the tool here:** [https://askubaid.github.io/K-means/](https://askubaid.github.io/K-means/)
 
-## 📖 About the Algorithm
+## 🛠️ Key Features
+- **Real-time Clustering**: Iterative processing until mathematical convergence.
+- **Natural Color Isolation**: Extract clusters using their original textures and shading with transparent backgrounds.
+- **Multi-Color Subtraction**: Toggle multiple color clusters to "punch holes" in the original image (Automatic background/object removal).
+- **Interactive UI**: Fullscreen modal previews with checkerboard transparency support.
+- **Bulk Export**: Download a structured ZIP file containing the original image, simplified output, and all isolated segments.
+- **Fully Responsive**: Optimized for both desktop and mobile devices.
 
-K-Means clustering is a machine learning method used to group data points. In this app, each pixel's RGB value is a data point.
-The algorithm:
-- **1:** Picks random colors.
-- **2:** Assigns every pixel to the nearest of those colors.
-- **3:** Calculates the average color of each group and moves the colors to that average.
-- **4:** Repeats until the colors stop changing (Convergence)
+## 🧪 How the Algorithm Works
+Each pixel's RGB value is treated as a data point in 3D space. The algorithm:
+1. **Initialize**: Picks $K$ random colors (centroids).
+2. **Assign**: Assigns every pixel to its nearest centroid.
+3. **Update**: Calculates the average color of each group and moves the centroid to that average.
+4. **Converge**: Repeats until the colors stabilize.
 
+## 🧰 Tech Stack
 
-## 🛠️ Features
-- **Real-time Clustering**: Processes pixels until centroids converge.
-- **Transparency Support**: Individual clusters are exported with transparent backgrounds.
-- **ZIP Export**: Download all color segments, the original, and the simplified image in one click.
-- **Mobile Responsive**: Fully functional on mobile and desktop browsers.
+- **React.js (Vite)**
+- **Material UI (Icons)**
+- **JSZip (Project Export)**
+- **HTML5 Canvas API (Image Processing)**
+
 
 ## 💻 How to Run Locally
 
@@ -28,7 +34,7 @@ The algorithm:
    ```bash
    git clone https://github.com/askubaid/K-means.git
    cd K-means
-   
+     
 2. **Install Dependencies**
    ```bash
    npm install
@@ -36,4 +42,6 @@ The algorithm:
 3. **Run the App**
    ```bash
    npm run dev
+
+
 

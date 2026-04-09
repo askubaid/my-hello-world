@@ -26,27 +26,17 @@ export default function App() {
   
 
   const [selectedItem, setSelectedItem] = useState(null);
+
+
   
   const [subtractionResult, setSubtractionResult] = useState(null);
-  const [subtractedIndex, setSubtractedIndex] = useState(null);
+  const [subtractedIndices, setSubtractedIndices] = useState([]); // Array for multiple selections
 
 
   // In App.jsx
   const [results, setResults] = useState({ segments: [], colors: [], iterations: 0 });
 
 
-  // const handleImageUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setFileName(file.name)
-  //     const reader = new FileReader();
-  //     reader.onload = (event) => {
-  //       setImage(event.target.result);
-  //       setResults({ segments: [], colors: [] });
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
 
   const handleImageUpload = (e) => {
   const file = e.target.files[0];
@@ -57,7 +47,8 @@ export default function App() {
       // Clear ALL old results
       setResults({ segments: [], originalSegments: [], colors: [], iterations: 0, assignments: [] });
       setSubtractionResult(null); 
-      setSubtractedIndex(null);
+      //setSubtractedIndex(null);
+      setSubtractedIndices([]);
     };
     reader.readAsDataURL(file);
   }
@@ -65,11 +56,85 @@ export default function App() {
 
 
 
-const handleSubtraction = (index) => {
-  setIsProcessing(true); // Start Spinner
-  setSubtractedIndex(index);
+// const handleSubtraction = (index) => {
+//   setIsProcessing(true); // Start Spinner
+//   setSubtractedIndex(index);
   
-  setTimeout(() => { // Small timeout to let UI render the spinner
+//   setTimeout(() => { // Small timeout to let UI render the spinner
+//     const img = new Image();
+//     img.onload = () => {
+//       const tempCanvas = document.createElement('canvas');
+//       const ctx = tempCanvas.getContext('2d');
+//       tempCanvas.width = img.width;
+//       tempCanvas.height = img.height;
+//       ctx.drawImage(img, 0, 0);
+      
+//       const imageData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+//       const pixels = imageData.data;
+
+//       results.assignments.forEach((clusterIdx, i) => {
+//         if (clusterIdx === index) {
+//           pixels[i * 4 + 3] = 0; 
+//         }
+//       });
+
+//       setSubtractionResult(new ImageData(pixels, tempCanvas.width, tempCanvas.height));
+//       setIsProcessing(false); // Stop Spinner
+//     };
+//     img.src = image;
+//   }, 50);
+// }
+
+
+// const handleSubtraction = (index) => {
+//   setIsProcessing(true);
+
+//   // 1. Calculate the new list of selected indices
+//   const newIndices = subtractedIndices.includes(index)
+//     ? subtractedIndices.filter((i) => i !== index) // Deselect
+//     : [...subtractedIndices, index]; // Select
+
+//   setSubtractedIndices(newIndices);
+
+//   setTimeout(() => {
+//     const img = new Image();
+//     img.onload = () => {
+//       const tempCanvas = document.createElement('canvas');
+//       const ctx = tempCanvas.getContext('2d');
+//       tempCanvas.width = img.width;
+//       tempCanvas.height = img.height;
+//       ctx.drawImage(img, 0, 0);
+
+//       const imageData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+//       const pixels = imageData.data;
+
+//       // 2. Loop through and hide pixels belonging to ANY selected index
+//       results.assignments.forEach((clusterIdx, i) => {
+//         if (newIndices.includes(clusterIdx)) {
+//           pixels[i * 4 + 3] = 0; // Transparent
+//         }
+//       });
+
+//       setSubtractionResult(new ImageData(pixels, tempCanvas.width, tempCanvas.height));
+//       setIsProcessing(false);
+//     };
+//     img.src = image;
+//   }, 50);
+// };
+
+
+const handleSubtraction = (index) => {
+  setIsProcessing(true); // 1. Show spinner
+
+  // Determine new indices first
+  const newIndices = subtractedIndices.includes(index)
+    ? subtractedIndices.filter((i) => i !== index)
+    : [...subtractedIndices, index];
+  
+  setSubtractedIndices(newIndices);
+
+  // 2. Wrap the pixel-punching logic in a timeout
+  setTimeout(() => {
     const img = new Image();
     img.onload = () => {
       const tempCanvas = document.createElement('canvas');
@@ -77,22 +142,25 @@ const handleSubtraction = (index) => {
       tempCanvas.width = img.width;
       tempCanvas.height = img.height;
       ctx.drawImage(img, 0, 0);
-      
+
       const imageData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
       const pixels = imageData.data;
 
       results.assignments.forEach((clusterIdx, i) => {
-        if (clusterIdx === index) {
-          pixels[i * 4 + 3] = 0; 
+        if (newIndices.includes(clusterIdx)) {
+          pixels[i * 4 + 3] = 0; // Transparent
         }
       });
 
       setSubtractionResult(new ImageData(pixels, tempCanvas.width, tempCanvas.height));
-      setIsProcessing(false); // Stop Spinner
+      
+      setIsProcessing(false); // 3. Hide spinner after canvas is ready
     };
     img.src = image;
-  }, 50);
-}
+  }, 250); // 150ms ensures the spinner is visible to the user
+};
+
+
 
 const downloadSubtraction = () => {
   if (!subtractionResult) return;
@@ -102,7 +170,7 @@ const downloadSubtraction = () => {
   canvas.getContext('2d').putImageData(subtractionResult, 0, 0);
   
   const link = document.createElement('a');
-  link.download = `subtracted-cluster-${subtractedIndex + 1}.png`;
+  link.download = `subtracted-cluster-${1}.png`;
   link.href = canvas.toDataURL();
   link.click();
 }
@@ -235,38 +303,7 @@ const downloadSubtraction = () => {
             </div>
           <canvas ref={mainCanvasRef} style={{ maxWidth: '400px', borderRadius: '4px' }} />
 
-           {/* <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center',marginTop: '10px'}}>
-               
-               
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-
-              {results.colors.map((color, i) => 
-              
-              <div key={i} style={{display: 'flex', flexDirection:"column", alignItems: 'center', paddingLeft:"24px", paddingRight:"24px"}
-                }>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', gap: '20px'}}>
-              
-              <div style={{ fontWeight: 'bold', fontSize: '0.9em' }}>K-{i+1} </div>
-              
-              </div>
-              <div style={{ width: '100%', height: '6px', backgroundColor: `rgb(${color.r},${color.g},${color.b})`, marginTop: '8px', borderRadius: '2px' }}></div>
-              </div>
-              
-              )}
-              
-            
-            </div>
-
-                <button onClick={() => {
-                    const link = document.createElement('a');
-                    link.download = 'simplified-kmeans.png';
-                    link.href = mainCanvasRef.current.toDataURL();
-                    link.click();
-                }} style={styles.iconBtnStyle}><DownloadIcon fontSize="small" />
-              </button>
-            </div>     */}
-
+         
            {results.segments.length > 0 && (
           <div style={{ marginTop: '10px', flexDirection: 'row', display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: '10px'}}>
                      
@@ -378,7 +415,7 @@ const downloadSubtraction = () => {
               <p>Select a cluster to remove it from the original image</p>
 
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
-                {results.colors.map((color, i) => (
+                {/* {results.colors.map((color, i) => (
                   <button 
                     key={i}
                     onClick={() => handleSubtraction(i)}
@@ -390,7 +427,28 @@ const downloadSubtraction = () => {
                     }}
                     title={`Subtract Cluster ${i+1}`}
                   />
-                ))}
+                ))} */}
+
+                  {results.colors.map((color, i) => {
+                    const isSelected = subtractedIndices.includes(i);
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => handleSubtraction(i)}
+                        style={{
+                          width: '45px',
+                          height: '45px',
+                          borderRadius: '50%',
+                          backgroundColor: `rgb(${color.r},${color.g},${color.b})`,
+                          border: isSelected ? '5px solid #1976d2' : '2px solid #ddd', // Blue border for selected
+                          boxShadow: isSelected ? '0 0 10px rgba(25, 118, 210, 0.5)' : 'none',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        title={isSelected ? "Click to Deselect" : "Click to Subtract"}
+                      />
+                    );
+                  })}
               </div>
 
               {subtractionResult && (
@@ -408,7 +466,7 @@ const downloadSubtraction = () => {
 
           {/* SAVE ALL BUTTON */}
           
-          <button onClick={()=>downloadAllAsZip(image, results, mainCanvasRef, subtractionResult,subtractedIndex)} style={styles.saveAllBtnStyle}>
+          <button onClick={()=>downloadAllAsZip(image, results, mainCanvasRef, subtractionResult,)} style={styles.saveAllBtnStyle}>
             <DownloadIcon style={{marginRight: '10px'}} /> Save Project (ZIP)
           </button>
 
